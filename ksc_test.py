@@ -5,13 +5,9 @@ from numpy.linalg import norm, linalg
 import matplotlib.pyplot as plt
 
 
-def cal_alpha(x, y):
-    return dot(transpose(x), y) / sum(y ** 2)
-
-
 # dist of time series
 def dist_ts(x, y):
-    alpha = cal_alpha(x, y)
+    alpha = dot(transpose(x), y) / sum(y ** 2)
     return norm(x - alpha * y) / norm(x)
 
 
@@ -81,7 +77,7 @@ def ksc_toy(X, K):
             xj = X[j]
             for k in range(K):
                 center = centroid[k, :]
-                D[j, k], tmp, tmps = dist_ts_shift(center, xj)
+                [D[j, k], tmp, tmps] = dist_ts_shift(center, xj)
         C = argmin(D, axis=1)
 
         if sum(abs(C - prev_C)) == 0:
@@ -92,9 +88,8 @@ def ksc_toy(X, K):
 if __name__ == '__main__':
     X = genfromtxt('time_series_data.tsv', delimiter='\t')
     K = 5
-    C, centroid = ksc_toy(X, K)
+    [C, centroid] = ksc_toy(X, K)
 
-    i = 1
     f, fig = plt.subplots(1, 5)
     for i in range(K):
         c = centroid[i]
